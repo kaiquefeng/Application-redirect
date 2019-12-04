@@ -3,7 +3,7 @@
     $senha = $_POST["password"];
     $email = $_POST["email"];
 
-    if (($senha) == "1234" && ($email) == "lucas@380volts.com.br") {
+    if (($senha) == "cursinho@380" && ($email) == "contato@cursinhodapoli.com.br") {
 
         header('Location: cursinho-da-poli.php');
         
