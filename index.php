@@ -1,3 +1,35 @@
+<?php 
+    function logarUsuario($email, $senha){
+        $arquivo = "json/usuarios.json";
+        $logado = false;
+
+        $jsonUsuarios = file_get_contents($arquivo);
+
+        $arrayUsuarios = json_decode($jsonUsuarios, true);
+
+        foreach ($arrayUsuarios["usuarios"] as $key => $value) {
+            if($email == $value["email"] && password_verify($senha, $value["senha"])){
+                session_start();
+
+                $_SESSION["nome"] = $value["nome"];
+                $_SESSION["senha"] = $value["senha"];
+                $_SESSION["logado"] = true;
+
+                break;
+            }
+        }
+        return $logado;
+    }
+
+    if($_POST){
+        $email = $_POST["email"];
+        $senha = $_POST["senha"];
+
+        $logado = logarUsuario($email, $senha);
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,19 +43,31 @@
 
 
   <body class="text-center container">
-    <form class="form-signin" method="POST" action="confirma-senha.php">
+    <form class="form-signin" method="POST">
       <img class="mb-4" src="assets/images/logo.png" alt="" >
       <!-- <h1 class="h3 mb-3 font-weight-normal">Faça login</h1> -->
-      <label for="inputEmail" class="sr-only">Endereço de email</label>
+      <label for="email" class="sr-only">Endereço de email</label>
       <input type="email" id="email" name="email" class="form-control" placeholder="Seu email" required autofocus>
-      <label for="inputPassword" class="sr-only">Senha</label>
-      <input type="password" id="password" name="password" class="form-control" placeholder="Senha" required>
-      <div class="checkbox mb-3">
-        <!-- <label>
+      
+      <label for="senha" class="sr-only">Senha</label>
+      <input type="password" id="senha" name="senha" class="form-control" placeholder="Senha" required> <br>
+      <!-- <div class="checkbox mb-3">
+        <label>
           <input type="checkbox" value="remember-me"> Lembrar de mim
-        </label> -->
-      </div>
+        </label>
+      </div> -->
       <button class="btn btn-lg btn-dark btn-block" type="submit">Login</button>
+      <br>
+      
+
+      <?php if($_POST && isset($logado) && !$logado): ?>
+            <div class="alert alert-danger">
+                <p>Usuário ou senha inválidos</p>
+            </div>
+        <?php elseif(isset($logado) && $logado):?>
+            <?php header("Location: cursinho-da-poli.php"); ?>
+        <?php endif; ?>
+
       <p class="mt-5 mb-3 text-muted">&copy; 2019</p>
     </form>
 
